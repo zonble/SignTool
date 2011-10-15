@@ -3,6 +3,8 @@ from AppKit import *
 import os, os.path
 
 class STDropView(NSView):
+	"A custom view which accepts dropping Xcode archive files on it."
+
 	def initWithFrame_(self, frame):
 		self = super(STDropView, self).initWithFrame_(frame)
 		if self:
