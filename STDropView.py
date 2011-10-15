@@ -14,31 +14,36 @@ class STDropView(NSView):
 		return self
 	
 	def drawRect_(self, rect):
-		b = NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius_(self.bounds(), 10.0, 10.0)
+		myBounds = self.bounds()
+		myBounds.origin.x = 5
+		myBounds.origin.y = 5
+		myBounds.size.width -= 10
+		myBounds.size.height -= 10
+		b = NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius_(myBounds, 10.0, 10.0)
 		color = NSColor.yellowColor() if self.receivingFile \
 			else NSColor.colorWithCalibratedHue_saturation_brightness_alpha_(0.0, 0.0, 1.0, 0.5)
 		color.setFill()
 		b.fill()
 		if self.image:
-			frame = NSMakeRect((self.bounds().size.width - 128) / 2 , (self.bounds().size.height - 128) / 2, 128, 128)
+			frame = NSMakeRect((self.bounds().size.width - 128) / 2, (self.bounds().size.height - 128) / 2 + 10, 128, 128)
 			self.image.drawInRect_fromRect_operation_fraction_(frame, NSZeroRect, NSCompositeSourceOver, 1.0)
-		if self.filename:
-			frame = NSMakeRect(10, 7, self.bounds().size.width - 20, 16)
-			paragraphStyle = NSMutableParagraphStyle.alloc().init()
-			paragraphStyle.setAlignment_(NSCenterTextAlignment)
-			paragraphStyle.setLineBreakMode_(NSLineBreakByTruncatingMiddle)
-			attr = {NSFontAttributeName:NSFont.systemFontOfSize_(12),
-				NSParagraphStyleAttributeName:paragraphStyle
-			}
-			attributedString = NSAttributedString.alloc().initWithString_attributes_(self.filename, attr)
-			attributedString.drawInRect_(frame)
+		frame = NSMakeRect(10, 12, self.bounds().size.width - 20, 16)
+		paragraphStyle = NSMutableParagraphStyle.alloc().init()
+		paragraphStyle.setAlignment_(NSCenterTextAlignment)
+		paragraphStyle.setLineBreakMode_(NSLineBreakByTruncatingMiddle)
+		attr = {NSFontAttributeName:NSFont.systemFontOfSize_(12),
+			NSParagraphStyleAttributeName:paragraphStyle
+		}
+		filename = self.filename if self.filename else "No file selected"
+		attributedString = NSAttributedString.alloc().initWithString_attributes_(filename, attr)
+		attributedString.drawInRect_(frame)
 
+		b.setLineWidth_(3)
+		b.setLineDash_count_phase_([10, 5], 2, 0)
 		NSColor.darkGrayColor().setStroke()
 		b.stroke()
 		
 	def draggingEntered_(self, sender):
-		self.receivingFile = True
-		self.setNeedsDisplay_(True)
 		if NSFilenamesPboardType in sender.draggingPasteboard().types():
 			list = sender.draggingPasteboard().propertyListForType_(NSFilenamesPboardType)
 			try:
@@ -47,6 +52,8 @@ class STDropView(NSView):
 				if os.path.isdir(os.path.abspath(list[0])) == False: return NSDragOperationNone
 			except:
 				pass
+			self.receivingFile = True
+			self.setNeedsDisplay_(True)
 			return NSDragOperationGeneric
 		return NSDragOperationNone
 

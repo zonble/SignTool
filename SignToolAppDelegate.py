@@ -93,6 +93,13 @@ class SignToolAppDelegate(NSObject):
 	@objc.IBAction
 	def changeCodeSign_(self, sender):
 		if not self.currentArchiveAppFilepath:
+			alert = NSAlert.alertWithMessageText_defaultButton_alternateButton_otherButton_informativeTextWithFormat_("You did not specify a Xcode archive bundle!", "OK", None, None, "Please select a Xcode archive and try again")
+			alert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo_(self.window, None, None, None)
+			return
+		identity = self.comboBox.stringValue()
+		if len(identity) == 0:
+			alert = NSAlert.alertWithMessageText_defaultButton_alternateButton_otherButton_informativeTextWithFormat_("You did not specify an identity!", "OK", None, None, "Please select an identity and try again")
+			alert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo_(self.window, None, None, None)
 			return
 
 		self.sheetCloseButton.setEnabled_(False)
@@ -100,7 +107,6 @@ class SignToolAppDelegate(NSObject):
 		NSApp.beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo_(self.sheet, self.window, None, None, None)
 		self.sheet.orderFront_(self)
 
-		identity = self.comboBox.stringValue()
 		cmd = "codesign -f -vv -s \"" + identity + "\" \"" + self.currentArchiveAppFilepath + "\""
 		try:
 			p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -122,7 +128,7 @@ class SignToolAppDelegate(NSObject):
 		self.sheet.orderOut_(self)
 
 	def dropView_didReceiveFile_(self, inDropView, inFile):
-		return self.handleOpenFile(filenames[0])		
+		return self.handleOpenFile(inFile)		
 		
 	def windowWillClose_(self, notification):
 		NSApp.terminate_(self)

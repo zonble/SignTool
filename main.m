@@ -1,11 +1,3 @@
-//
-//  main.m
-//  SignTool
-//
-//  Created by zonble on 10/15/11.
-//  Copyright __MyCompanyName__ 2011. All rights reserved.
-//
-
 #import <Python/Python.h>
 #import <Cocoa/Cocoa.h>
 
