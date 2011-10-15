@@ -4,7 +4,7 @@ Xcode makes building your application and submit it to AppStore easy. After sele
 
 You can use a command line tool to do it, the command is "codesign -s IDENTIFY PATH_TO_YOUR_APP", but a GUI tool can make the task more friendly. That is why SignTool is built.
 
-# How to use it?
+## How to use it?
 
 1. Drag and drop your Xcode archive to SignTool's window.
 2. Select a new identity for code signing.
