@@ -126,6 +126,11 @@ class SignToolAppDelegate(NSObject):
 	def closeSheet_(self, sender):
 		NSApp.endSheet_(self.sheet)
 		self.sheet.orderOut_(self)
+		
+	@objc.IBAction
+	def openHomepage_(self, sender):
+		url = NSURL.URLWithString_("https://github.com/zonble/SignTool")
+		NSWorkspace.sharedWorkspace().openURL_(url)
 
 	def dropView_didReceiveFile_(self, inDropView, inFile):
 		return self.handleOpenFile(inFile)		
